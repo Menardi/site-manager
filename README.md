@@ -91,7 +91,11 @@ Ensure that `certbot` is installed, or this step won't work. Be aware that this 
 sudo ./addletsencrypt.sh github.com
 ```
 
-When installed, `certbot` automatically sets up a cron job to renew certificates when necessary, so you do not need to worry about that.
+When installed, `certbot` automatically sets up a cron job to renew certificates when necessary. However, nginx still needs to be reloaded to use the new certificates. Open `/etc/cron.d/certbot` and find `certbot -q renew`. Replace it with:
+
+```
+certbot -q renew --post-hook "/etc/init.d/nginx reload"
+```
 
 ## Todo
 
