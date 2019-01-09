@@ -22,8 +22,13 @@ if ! [ -f /etc/nginx/sites-enabled/$1 ]; then
   exit 1
 fi
 
-echo "Getting certificates"
-certbot certonly --webroot -w /srv/www/$1/public_html -d $1 # -d www.$1
+echo "Getting certificate"
+if certbot certonly --webroot -w /srv/www/$1/public_html -d $1; then
+  echo "Got certificate"
+else
+  echo "Failed to get certificate"
+  exit 1
+fi
 
 if ! [ -f /etc/ssl/certs/dhparam.pem ]; then
   echo "Creating dhparam.pem"
