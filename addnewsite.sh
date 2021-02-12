@@ -33,8 +33,8 @@ usermod -s /bin/false $user
 echo Changing ownership of /home/$user to root
 chown root:root /home/$user
 
-echo Creating /home/$user/www/
-mkdir -p /home/$user/www
+echo Creating /home/$user/www/$domain
+mkdir -p /home/$user/www/$domain
 
 echo Changing ownership of /home/$user/www/ to $user and group to www-data
 chown $user:www-data /home/$user/www
@@ -44,7 +44,7 @@ mkdir -p /srv/www/$domain/public_html
 mkdir -p /srv/www/$domain/logs
 
 echo Binding /home/$user/www to /srv/www/$domain/public_html
-mountcommand="mount --bind /home/$user/www /srv/www/$domain/public_html"
+mountcommand="mount --bind /home/$user/www/$domain /srv/www/$domain/public_html"
 eval $mountcommand
 
 # Newer versions of Ubuntu don't come with a default rc.local file
