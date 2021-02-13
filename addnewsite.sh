@@ -37,7 +37,7 @@ echo Creating /home/$user/www/$domain
 mkdir -p /home/$user/www/$domain
 
 echo Changing ownership of /home/$user/www/ to $user and group to www-data
-chown $user:www-data /home/$user/www
+chown -R $user:www-data /home/$user/www
 
 echo Creating server directories
 mkdir -p /srv/www/$domain/public_html
