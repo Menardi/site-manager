@@ -10,7 +10,7 @@ server {
         gzip_proxied expired no-cache no-store private auth;
         gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/svg+xml;
 
-	listen 443 ssl;
+	listen 443 ssl http2;
 
 	server_name _SITEURL_ www._SITEURL_;
 
