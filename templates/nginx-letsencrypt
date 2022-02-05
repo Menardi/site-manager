@@ -5,6 +5,11 @@ server {
 	access_log /srv/www/_SITEURL_/logs/access.log;
 	error_log /srv/www/_SITEURL_/logs/error.log;
 
+        gzip on;
+        gzip_min_length 1000;
+        gzip_proxied expired no-cache no-store private auth;
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/svg+xml;
+
 	listen 443 ssl;
 
 	server_name _SITEURL_ www._SITEURL_;
