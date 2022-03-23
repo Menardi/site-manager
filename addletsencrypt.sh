@@ -23,7 +23,7 @@ if ! [ -f /etc/nginx/sites-enabled/$1 ]; then
 fi
 
 echo "Getting certificate"
-if certbot certonly --webroot -w /srv/www/$1/public_html -d $1; then
+if certbot certonly --webroot -w /srv/www/$1/public_html -d $1 -d www.$1; then
   echo "Got certificate"
 else
   echo "Failed to get certificate"
