@@ -6,8 +6,8 @@ A simple set of scripts to set up multiple websites on a server. Convenient for 
 The scripts do the following:
 
  - Create all the necessary config for the nginx site
- - Provides SFTP login with chroot-jailed users (that is, they can only see their home directory, where files are served from)
  - Set up LetsEncrypt with only modern ciphers
+ - (Optional) Provide SFTP login with chroot-jailed users (that is, they can only see their home directory, where files are served from)
 
 ## Usage
 Clone this repository onto your server, and run the scripts. Make sure that `nginx` is installed. If you want to use LetsEncrypt, you will also need to install [Certbot](https://certbot.eff.org/).
@@ -33,10 +33,7 @@ And change it to:
 
 ```
 Subsystem sftp internal-sftp
-```
 
-At the end of the file, add:
-```
 Match Group sftponly
         ChrootDirectory /home/%u
         ForceCommand internal-sftp
@@ -54,33 +51,43 @@ sudo /etc/init.d/ssh restart
 In most cases, you will want do do this:
 
 ```
-sudo ./addnewsite.sh domain.com username
-sudo ./enablesite.sh domain.com
-sudo ./addletsencrypt.sh domain.com
+sudo ./addnewsite.sh example.com username
+sudo ./enablesite.sh example.com
+sudo ./addletsencrypt.sh example.com
 ```
 
-### Create a site
+### Creating a site
 
-The script requires two arguments. The first is the domain of the site you will be hosting. The second is the username of the account which will be used to log in via SFTP.
+The script takes two arguments. The first is the domain of the site you will be hosting (required). The second is a username for the account which will be created to log in via SFTP (optional). This user will be limited to logging in via SFTP (make sure you follow the "System config" section above to ensure this).
+
+To create a site and create a new SFTP user, run:
 
 ```
-sudo ./addnewsite.sh github.com github
+sudo ./addnewsite.sh example.com examplenewuser
 ```
 
-Creating the site will set up all the configuration, but will not enable it. To do that, use the enable script.
+To create a site without a new SFTP user, run:
+
+```
+sudo ./addnewsite.sh example.com
+```
+
+If you do this, you will need to SFTP in with an existing normal user on the server.
+
+> Creating the site will set up all the configuration, but will not enable it. To do that, use the enable script.
 
 ### Enable a site
 
 Once the config is all ready, you can enable it in nginx:
 
 ```
-sudo ./enablesite.sh github.com
+sudo ./enablesite.sh example.com
 ```
 
 ### Disable a site
 
 ```
-sudo ./disablesite.sh github.com
+sudo ./disablesite.sh example.com
 ```
 
 ### Adding LetsEncrypt
