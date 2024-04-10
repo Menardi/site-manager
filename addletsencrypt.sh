@@ -22,8 +22,17 @@ if ! [ -f /etc/nginx/sites-enabled/$1 ]; then
   exit 1
 fi
 
-echo "Getting certificate"
-if certbot certonly --webroot -w /srv/www/$1/public_html -d $1 -d www.$1; then
+echo "Getting certificate for $1"
+domainArgs="-d $1"
+domainDotCount=$(echo $1 | grep -o "\." | wc -l)
+
+# Add a www certificate if this is the root domain (i.e. if it only has one dot, so doesn't work for .co.uk or others yet)
+if [ $domainDotCount -eq 1 ]; then
+  domainArgs="$domainArgs -d www.$1"
+  echo " - Including certificate for www.$1"
+fi
+
+if certbot certonly --webroot -w /srv/www/$1/public_html $domainArgs; then
   echo "Got certificate"
 else
   echo "Failed to get certificate"
