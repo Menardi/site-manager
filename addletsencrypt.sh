@@ -22,17 +22,19 @@ if ! [ -f /etc/nginx/sites-enabled/$1 ]; then
   exit 1
 fi
 
-echo "Getting certificate for $1"
-domainArgs="-d $1"
-domainDotCount=$(echo $1 | grep -o "\." | wc -l)
+domain=$1
+
+echo "Getting certificate for $domain"
+domainArgs="-d $domain"
+domainDotCount=$(echo $domain | grep -o "\." | wc -l)
 
 # Add a www certificate if this is the root domain (i.e. if it only has one dot, so doesn't work for .co.uk or others yet)
 if [ $domainDotCount -eq 1 ]; then
-  domainArgs="$domainArgs -d www.$1"
-  echo " - Including certificate for www.$1"
+  domainArgs="$domainArgs -d www.$domain"
+  echo " - Including certificate for www.$domain"
 fi
 
-if certbot certonly --webroot -w /srv/www/$1/public_html $domainArgs; then
+if certbot certonly --webroot -w /srv/www/$domain/public_html $domainArgs; then
   echo "Got certificate"
 else
   echo "Failed to get certificate"
@@ -45,8 +47,14 @@ if ! [ -f /etc/ssl/certs/dhparam.pem ]; then
 fi
 
 echo "Setting new nginx config"
-cp templates/nginx-letsencrypt /etc/nginx/sites-available/$1
-sed -i "s@_SITEURL_@$1@g" /etc/nginx/sites-available/$1
+cp templates/nginx-letsencrypt /etc/nginx/sites-available/$domain
+
+# Remove www if this is a subdomain (i.e. if it only has one dot, so doesn't work for .co.uk or others yet)
+if [ $domainDotCount -gt 1 ]; then
+  sed "s@ www\._SITEURL_@@g" -i /etc/nginx/sites-available/$domain
+fi
+
+sed -i "s@_SITEURL_@$domain@g" /etc/nginx/sites-available/$domain
 
 echo "Reloading nginx"
 /etc/init.d/nginx reload

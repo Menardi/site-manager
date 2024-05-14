@@ -65,6 +65,13 @@ fi
 
 echo "Setting up site for nginx"
 cp templates/nginx-basic /etc/nginx/sites-available/$domain
-sed -i "s@_SITEURL_@$domain@g" /etc/nginx/sites-available/$domain
+
+# Remove www if this is a subdomain (i.e. if it only has one dot, so doesn't work for .co.uk or others yet)
+domainDotCount=$(echo $domain | grep -o "\." | wc -l)
+if [ $domainDotCount -gt 1 ]; then
+  sed "s@ www\._SITEURL_@@g" -i /etc/nginx/sites-available/$domain
+fi
+
+sed "s@_SITEURL_@$domain@g" -i /etc/nginx/sites-available/$domain
 
 echo "You'll need to run the enable script to complete this set up"
