@@ -1,39 +1,19 @@
 server {
 	root /srv/www/_SITEURL_/public_html;
-	index index.html index.php;
+	index index.html;
 
 	access_log /srv/www/_SITEURL_/logs/access.log;
 	error_log /srv/www/_SITEURL_/logs/error.log;
+
+	gzip on;
+	gzip_min_length 1000;
+	gzip_proxied expired no-cache no-store private auth;
+	gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/svg+xml;
 
 	server_name _SITEURL_ www._SITEURL_;
 
 	location / {
 		try_files $uri $uri/ /index.html =404;
-	}
-
-	#error_page 404 /404.html;
-
-	# redirect server error pages to the static page /50x.html
-	#
-	#error_page 500 502 503 504 /50x.html;
-	#location = /50x.html {
-	#	root /usr/share/nginx/www;
-	#}
-
-	location ~ \.php$ {
-		try_files $uri =404;
-		fastcgi_split_path_info ^(.+\.php)(/.+)$;
-		fastcgi_pass unix:/var/run/php5-fpm.sock;
-		fastcgi_index index.php;
-		fastcgi_param SCRIPT_FILENAME /srv/www/_SITEURL_/public_html$fastcgi_script_name;
-		include fastcgi_params;
-	}
-
-	# deny access to .htaccess files, if Apache's document root
-	# concurs with nginx's one
-	#
-	location ~ /\.ht {
-		deny all;
 	}
 
 	# for letsencrypt
