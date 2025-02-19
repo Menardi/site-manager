@@ -13,7 +13,7 @@ server {
 	server_name _SITEURL_ www._SITEURL_;
 
 	location / {
-		try_files $uri $uri/ /index.html =404;
+		try_files $uri $uri.html $uri/ =404;
 	}
 
 	# for letsencrypt
